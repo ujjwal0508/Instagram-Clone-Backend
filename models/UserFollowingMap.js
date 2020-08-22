@@ -1,4 +1,7 @@
 const db = require('./db')
+const util = require('util');
+const { throws } = require('assert');
+const query = util.promisify(db.query).bind(db);
 
 const UserFollowingMap = function (userFollowingMap) {
     this.user_id = userFollowingMap.user_id;
@@ -20,23 +23,23 @@ UserFollowingMap.create = async (userFollowingMap, result) => {
     });
 }
 
-UserFollowingMap.findByUserId = async (user_id, result) => {
-    db.query(`SELECT * FROM user_following WHERE id = "${user_id}"`, (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
+UserFollowingMap.findByUserId = async (user_id) => {
+
+    try {
+        let dbResult = await query(`SELECT * FROM user_following WHERE user_id = "${user_id}"`);
+
+        let followings = [];
+        for(let data of dbResult){
+            followings.push(data.following_id);
         }
 
-        if (res.length) {
-            console.log("found user Followings: ", res);
-            result(null, res);
-            return;
-        }
+        return followings;
 
-        // not found Customer with the id
-        result({ kind: "not_found" }, null);
-    });
+    } catch (error) {
+        console.log(error);
+        throw new Error(error);
+    }
+
 };
 
 UserFollowingMap.findByUserFollowingId = async (userId, followingId, result) => {

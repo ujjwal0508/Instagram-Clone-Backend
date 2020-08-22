@@ -15,5 +15,6 @@ router.get('/handle/:handle', User.getByHandle);
 
 router.post('/request', User.requestFollow);
 router.post('/accept', User.acceptFollow);
+router.post('/getFeed', User.getUserFeed);
 
 module.exports = router;

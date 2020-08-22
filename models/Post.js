@@ -1,5 +1,8 @@
 const db = require('./db')
 const { v4: uuidv4 } = require('uuid');
+const util = require('util');
+const { throws } = require('assert');
+const query = util.promisify(db.query).bind(db);
 
 const Post = function (post) {
     this.id = uuidv4();
@@ -59,5 +62,16 @@ Post.getAll = result => {
         result(null, res);
     });
 };
+
+Post.findByUserId = async (user_id) => {
+
+    try {
+        let posts = await query(`SELECT * FROM post WHERE user_id = "${user_id}"`);
+        return posts;
+
+    } catch (error) {
+        return new Error(error);
+    }
+}
 
 module.exports = Post;

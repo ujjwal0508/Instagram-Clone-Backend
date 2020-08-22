@@ -1,6 +1,6 @@
 const db = require('./db')
 
-const UserFollowerMap = function (userFollowerMap) {
+const   UserFollowerMap = function (userFollowerMap) {
     this.user_id = userFollowerMap.user_id;
     this.follower_id = userFollowerMap.follower_id;
     this.is_pending = userFollowerMap.is_pending;

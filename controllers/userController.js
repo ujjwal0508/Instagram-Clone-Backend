@@ -2,6 +2,7 @@ const User = require('../models/User');
 const UserFollowingMap = require('../models/UserFollowingMap');
 const { response } = require('express');
 const UserFollowerMap = require('../models/UserFollowerMap');
+const Post = require('../models/Post');
 
 exports.create = (req, res) => {
 
@@ -78,21 +79,18 @@ exports.getByHandle = (req, res) => {
 
 exports.requestFollow = async (req, res) => {
 
-    let userFollower = new UserFollowerMap({
-        user_id: req.body.user_id,
-        follower_id: req.body.follower_id,
-        is_pending: true
-    });
+    try {
+        let userFollower = new UserFollowerMap({
+            user_id: req.body.user_id,
+            follower_id: req.body.follower_id,
+            is_pending: true
+        });
 
-    UserFollowerMap.addPendingRequest(userFollower, (err, data) => {
-        if (err) {
-            res.status(500).send({
-                message: "Error adding request"
-            });
-        } else {
-            res.status(200).send();
-        }
-    })
+        await UserFollowerMap.addPendingRequest(userFollower);
+        res.status(200).send();
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 }
 
 exports.acceptFollow = async (req, res) => {
@@ -109,10 +107,29 @@ exports.acceptFollow = async (req, res) => {
 
         res.status(200).send();
 
-    } catch {
+    } catch (error) {
         res.status(500).send({
             message: "Request not found"
         });
     }
+}
 
+exports.getUserFeed = async (req, res) => {
+
+    try {
+
+        let userId = req.body.user_id;
+        let userFollowingList = await UserFollowingMap.findByUserId(userId);
+        let posts = [];
+
+        for (userFollowing of userFollowingList) {
+
+            let followingPosts = await Post.getById(userFollowing);
+            posts.push.apply(posts, followingPosts);
+        }
+
+        res.status(200).send(posts);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 }
