@@ -11,6 +11,4 @@ router.get('/', function (req, res, next) {
 router.post('/add', Post.create);
 router.get('/get', Post.getAll);
 router.get('/get/:id', Post.getById);
-
-
 module.exports = router;

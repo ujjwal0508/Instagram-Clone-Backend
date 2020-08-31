@@ -12,7 +12,6 @@ router.post('/add', User.create);
 router.get('/get', User.getAll);
 router.get('/get/:id', User.getById);
 router.get('/handle/:handle', User.getByHandle);
-
 router.post('/request', User.requestFollow);
 router.post('/accept', User.acceptFollow);
 router.post('/getFeed', User.getUserFeed);
