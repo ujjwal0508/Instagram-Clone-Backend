@@ -3,14 +3,16 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 let keys = require('../config/keys')
 
 
-passport.serializeUser((name, done) => {
+passport.serializeUser((profile, done) => {
     console.log('serialize');
-    done(null, name);
+    // console.log(profile)
+    done(null, profile);
 });
 
-passport.deserializeUser((id, done) => {
-    console.log('deserialize');
-    done(null, id);
+passport.deserializeUser((profile, done) => {
+    console.log('deserialize abcd');
+    // console.log(profile);
+    done(null, profile);
 });
 
 passport.use(new GoogleStrategy({
@@ -21,8 +23,8 @@ passport.use(new GoogleStrategy({
     function (accessToken, refreshToken, profile, done) {
 
         console.log('inside passport callback function google')
-        console.log(profile)
+        // console.log(profile)
 
-        done(null, profile.displayName);
+        done(null, profile);
     }
 ));

@@ -32,9 +32,8 @@ router.get('/google', passport.authenticate('google', {
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
     // res.send(req.user);
     // res.redirect('/profile');
-    // console.log(req.user);
-    console.log(' inside redirect route');
-    res.send(req.user);
+    console.log(' inside google redirect');
+    res.redirect('/');
 });
 
 module.exports = router;
