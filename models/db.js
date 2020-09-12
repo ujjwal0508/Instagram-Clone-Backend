@@ -1,9 +1,11 @@
 let mysql = require('mysql');
+
+let keys = require('../config/keys')
 let connection = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'instagram'
+  host: keys.mysql.host,
+  user: keys.mysql.user,
+  password: keys.mysql.password,
+  database: keys.mysql.database
 });
 
 module.exports = connection;
