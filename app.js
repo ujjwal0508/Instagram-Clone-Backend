@@ -7,6 +7,7 @@ const passport = require('passport');
 const passportSetup = require('./config/passport-setup');
 const cookieSession = require('cookie-session');
 let keys = require('./config/keys')
+let authMiddleware = require('./middleware/authenticate')
 
 
 // var swaggerUi = require('swagger-ui-express');
@@ -41,6 +42,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//middleware
+app.use(/\/((?!auth).)*/, authMiddleware);
+
 
 app.use('/', indexRouter);
 app.use('/auth', auth);

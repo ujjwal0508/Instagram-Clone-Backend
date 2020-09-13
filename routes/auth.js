@@ -6,6 +6,13 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
+// auth logout
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+});
+
+
 // auth with facebook
 router.get('/facebook', passport.authenticate('facebook', {
     scope: ['email']
@@ -24,7 +31,7 @@ router.get('/facebook/redirect', passport.authenticate('facebook'), (req, res) =
 
 // auth with google
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile']
+    scope: ['profile', 'email']
 }));
 
 // callback route for facebook to redirect to
@@ -33,7 +40,7 @@ router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
     // res.send(req.user);
     // res.redirect('/profile');
     console.log(' inside google redirect');
-    res.redirect('/');
+    res.redirect('/');  
 });
 
 module.exports = router;

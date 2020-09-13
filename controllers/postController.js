@@ -8,7 +8,7 @@ exports.create = (req, res) => {
         });
     }
 
-    console.log(Post);
+    // console.log(Post);
     // Create a Customer
     const post = new Post({
         description: req.body.description,
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
         image_url: req.body.image_url,
         video_url: req.body.video_url
     });
-    console.log('came here 2');
+    // console.log('came here 2');
 
     // Save Customer in the database
     Post.create(post, (err, data) => {

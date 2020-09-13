@@ -1,7 +1,6 @@
 const db = require('./db')
 const { v4: uuidv4 } = require('uuid');
 const util = require('util');
-const { throws } = require('assert');
 const query = util.promisify(db.query).bind(db);
 
 const Post = function (post) {

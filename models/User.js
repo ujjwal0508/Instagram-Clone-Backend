@@ -1,8 +1,11 @@
 const db = require('./db')
 const { v4: uuidv4 } = require('uuid');
+const util = require('util');
+const query = util.promisify(db.query).bind(db);
 
 const User = function (user) {
   this.id = uuidv4();
+  this.google_id = user.google_id;
   this.name = user.name;
   this.email = user.email;
   this.phone_number = user.phone_number;
@@ -11,6 +14,21 @@ const User = function (user) {
   this.handle = user.handle;
   this.image_url = user.image_url;
 }
+
+User.createTemp = async (user) => {
+
+  try {
+    console.log('creating user');
+    // console.log(user);
+    await query('INSERT INTO user SET ?', user);
+    console.log('user created');
+    return user;
+  } catch (error) {
+    console.log('Could not create user');
+    console.log(error);
+    return new Error(error);
+  }
+};
 
 User.create = (user, result) => {
 
@@ -28,23 +46,16 @@ User.create = (user, result) => {
   });
 }
 
-User.findById = (id, result) => {
-  db.query(`SELECT * FROM user WHERE id = "${id}"`, (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(err, null);
-      return;
-    }
+User.findById = async (id) => {
 
-    if (res.length) {
-      console.log("found user: ", res[0]);
-      result(null, res[0]);
-      return;
-    }
+  try {
+    let userList = await query(`SELECT * FROM user WHERE id = "${id}"`);
 
-    // not found Customer with the id
-    result({ kind: "not_found" }, null);
-  });
+    return userList[0];
+  } catch (error) {
+    console.log(error);
+    return new Error(error);
+  }
 };
 
 User.getAll = result => {
