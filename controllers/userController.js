@@ -15,6 +15,7 @@ exports.create = (req, res) => {
     // Create a Customer
     const user = new User({
         name: req.body.name,
+        google_id: req.body.google_id,
         email: req.body.email,
         phone_number: req.body.phone_number,
         is_verified: req.body.is_verified,
@@ -132,4 +133,30 @@ exports.getUserFeed = async (req, res) => {
     } catch (error) {
         res.status(500).send(error.message);
     }
+}
+
+exports.getFriendSuggestions = async (req, resp) => {
+
+
+    let userFriends = await UserFollowingMap.findByUserId(req.body.user_id);
+    
+
+    let firstLevelFriends = new Set();
+
+    for (const userFriend of userFriends) {
+        let friendsOfFriend = await UserFollowingMap.findByUserId(userFriend);
+        friendsOfFriend.forEach(firstLevelFriends.add, firstLevelFriends);
+    }
+
+    let firstLevelFriendsList = Array.from(firstLevelFriends);
+
+    for (let userFriend of userFriends) {
+
+        let userFriendIndex = firstLevelFriendsList.indexOf(userFriend);
+        if (userFriendIndex !== -1) {
+            firstLevelFriendsList.splice(userFriendIndex, 1);
+        }
+    }
+
+    resp.status(200).send(firstLevelFriendsList);
 }

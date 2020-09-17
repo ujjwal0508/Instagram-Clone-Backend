@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //middleware
-app.use(/\/((?!auth).)*/, authMiddleware);
+// app.use(/\/((?!auth).)*/, authMiddleware);
 
 
 app.use('/', indexRouter);

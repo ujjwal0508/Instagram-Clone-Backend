@@ -2,25 +2,22 @@ const db = require('./db')
 const util = require('util');
 const { throws } = require('assert');
 const query = util.promisify(db.query).bind(db);
+const { v4: uuidv4 } = require('uuid');
 
 const UserFollowingMap = function (userFollowingMap) {
+    this.id = uuidv4();
     this.user_id = userFollowingMap.user_id;
     this.following_id = userFollowingMap.following_id;
 }
 
-UserFollowingMap.create = async (userFollowingMap, result) => {
+UserFollowingMap.create = async (userFollowingMap) => {
 
-    db.query("INSERT INTO user_following SET ?", userFollowingMap, (err, res) => {
-        if (err) {
-            console.log('there is an error')
-            console.log("error: ", err);
+    try {
+        await query("INSERT INTO user_following SET ?", userFollowingMap);
 
-            return err;
-        }
-
-        console.log("created userFollowingMap: ", { id: res.user_id, ...userFollowingMap });
-        return { id: res.user_id, ...user };
-    });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 UserFollowingMap.findByUserId = async (user_id) => {
@@ -29,7 +26,7 @@ UserFollowingMap.findByUserId = async (user_id) => {
         let dbResult = await query(`SELECT * FROM user_following WHERE user_id = "${user_id}"`);
 
         let followings = [];
-        for(let data of dbResult){
+        for (let data of dbResult) {
             followings.push(data.following_id);
         }
 
@@ -42,23 +39,14 @@ UserFollowingMap.findByUserId = async (user_id) => {
 
 };
 
-UserFollowingMap.findByUserFollowingId = async (userId, followingId, result) => {
-    db.query(`SELECT * FROM user_following WHERE user_id = "${userId}" AND following_id = "${followingId}"`, (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
-        }
+UserFollowingMap.findByUserFollowingId = async (userId, followingId) => {
 
-        if (res.length) {
-            console.log("found user: ", res[0]);
-            result(null, res[0]);
-            return;
-        }
-
-        // not found Customer with the id
-        result({ kind: "not_found" }, null);
-    });
+    try {
+        let user = await query(`SELECT * FROM user_following WHERE user_id = "${userId}" AND following_id = "${followingId}"`);
+        return user;
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 module.exports = UserFollowingMap;

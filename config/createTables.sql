@@ -41,14 +41,18 @@ CREATE TABLE IF NOT EXISTS post_liker_map
 
 CREATE TABLE IF NOT EXISTS user_follower 
   ( 
-     user_id     VARCHAR (36) PRIMARY KEY, 
+     id           VARCHAR (36) PRIMARY KEY, 
+     user_id     VARCHAR (36) NOT NULL, 
      follower_id VARCHAR (36) NOT NULL, 
-     is_pending  BOOLEAN NOT NULL DEFAULT true 
+     is_pending  BOOLEAN NOT NULL DEFAULT true,
+     INDEX (user_id) 
   ); 
 
 CREATE TABLE IF NOT EXISTS user_following 
   ( 
-     user_id      VARCHAR (36) PRIMARY KEY, 
+     id           VARCHAR (36) PRIMARY KEY, 
+     user_id      VARCHAR (36) NOT NULL, 
      following_id VARCHAR (36) NOT NULL, 
-     is_pending   BOOLEAN NOT NULL DEFAULT true 
+     is_pending   BOOLEAN NOT NULL DEFAULT true,
+     INDEX (user_id) 
   ); 
